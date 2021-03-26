@@ -3,6 +3,7 @@ class DropdownItem {
     constructor(){
         this.state = {
             isFinal : false,
+            isOpen : false
         }
     }
 
@@ -10,11 +11,39 @@ class DropdownItem {
         callback()
     }
 
+    open(){
+        const component = this.currentComponent
+        const dropdownContent = component.querySelector('.dropdown-item-content')
+        console.log(dropdownContent.classList.contains('dropwdown-item-content-close'));
+        if (dropdownContent.classList.contains('dropwdown-item-content-close')) {
+            dropdownContent.classList.remove('dropwdown-item-content-close')
+            dropdownContent.classList.add('dropdown-item-content-open')
+        }
+    }
+
+    close(){
+        const component = this.currentComponent
+        const dropdownContent = component.querySelector('.dropdown-item-content')
+        if (dropdownContent.classList.contains('dropdown-item-content-open')) {
+            dropdownContent.classList.remove('dropdown-item-content-open')
+            dropdownContent.classList.add('dropwdown-item-content-close')
+        }
+    }
+
     listeners(){
         const component = this.currentComponent
-        const actionDropdown = component.querySelector('.dropdown-activator')
-        actionDropdown.addEventListener('click',(e)=>{
-            this.action(this.config.action)
+        const actionDropdown = component.querySelector('.dropdown-item-activator')
+        actionDropdown.addEventListener('click',()=>{
+            if (!this.state.isFinal){
+                this.state.isOpen = !this.state.isOpen
+                if (this.state.isOpen) {
+                    this.open()
+                } else {
+                    this.close()
+                }
+            }else{
+                this.action(this.config.action)
+            }
         })
     }
 
@@ -23,20 +52,22 @@ class DropdownItem {
         let div = document.createElement('div')
         div.classList.add('dropdown-item')
         
-        let contentTemplate = `
-            <div class = "dropdown-item-content">
-
-            </div>
-        `
-        
         let template = `
-            <button class = "dropdown-activator">
+            <button class = "dropdown-item-activator">
                 
             </button>
+
+            <div class = "dropdown-item-content dropwdown-item-content-close">
+
+            </div>
         `
         div.innerHTML = template
         this.currentComponent = div
         return div
+    }
+
+    getContainerItems(){
+        return () => this.currentComponent.querySelector('.dropdown-item-content')
     }
 
     render(container){
@@ -45,11 +76,31 @@ class DropdownItem {
         container.append(component)
         this.listeners()
 
-        const nameDropdownItem = this.currentComponent.querySelector('.dropdown-activator')
+        const nameDropdownItem = this.currentComponent.querySelector('.dropdown-item-activator')
         nameDropdownItem.innerText = this.config.nameItem
 
+        const containerItems = this.currentComponent.querySelector('.dropdown-item-content')
         if (!this.state.isFinal) {
+            //set items
+            const processItems = (data) => {
+                if(!data) return
+                data.forEach(data => {
 
+                    // process
+                    let component = new DropdownItem()
+                    component.setConfiguration(data)
+                    component.render(containerItems)
+
+                    if (data.content) {
+                        if (data.content.length > 0) {
+                            processItems(data.content)
+                        }
+                    }
+
+                })
+            }
+            console.log(this.config);
+            processItems(this.config.content)
         }
 
     }
@@ -58,6 +109,7 @@ class DropdownItem {
         this.config = config
         if(this.config.content){
             this.state.isFinal = this.config.content.length > 0 ? false : true
+            console.log(this.state.isFinal,config);
         }
     }
 
@@ -92,7 +144,6 @@ class Dropdown {
             if(this.state.isOpen){
                 this.open()
             }else{
-                console.log('wished');
                 this.close()
             }
         })
@@ -142,12 +193,17 @@ class Dropdown {
 
         // set the name of the dropdown
         const nameDropdown = this.currentComponent.querySelector('.dropdown-activator')
-        nameDropdown.innerText = this.data.nameDropdown
+        nameDropdown.innerHTML = `
+            <span>${this.data.nameDropdown}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+            <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        `
 
         const containerItems = this.currentComponent.querySelector('.dropdown-content')
 
         //set items
-        const processItems = (data) => {
+        const processItems = (data, containerItems) => {
             data.forEach(data => {
 
                 // process
@@ -157,13 +213,13 @@ class Dropdown {
 
                 if (data.content ) {
                     if (data.content.length > 0){
-                        processItems(data.content)
+                        processItems(data.content, component.getContainerItems()())
                     }
                 }
 
             })
         } 
-        processItems(this.data.content)
+        processItems(this.data.content, containerItems)
 
     }
 
@@ -184,10 +240,39 @@ const dropdownConfig = {
     nameDropdown : 'dropdown name ',
     content : [
         {
-            nameItem : 'dropdown item',
+            nameItem : 'dropdown item1',
             closeInAction : true,
-            action : () => {console.log('hola item');},
+            action : () => {console.log('hola item 1');},
             content : [
+                {
+                    nameItem: 'dropdown sub item1',
+                    closeInAction: true,
+                    action: () => { console.log('hola item 1'); },
+                    content : []
+                }
+            ]
+        },
+        {
+            nameItem: 'dropdown item2',
+            closeInAction: true,
+            action: () => { console.log('hola item 2'); },
+            content: [
+
+            ]
+        },
+        {
+            nameItem: 'dropdown item3',
+            closeInAction: true,
+            action: () => { console.log('hola item 3'); },
+            content: [
+
+            ]
+        },
+        {
+            nameItem: 'dropdown item3',
+            closeInAction: true,
+            action: () => { console.log('hola item 3'); },
+            content: [
 
             ]
         }

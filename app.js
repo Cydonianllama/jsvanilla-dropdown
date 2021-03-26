@@ -99,7 +99,6 @@ class DropdownItem {
 
                 })
             }
-            console.log(this.config);
             processItems(this.config.content)
         }
 
@@ -199,12 +198,13 @@ class Dropdown {
             <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
         `
+        /* vector in :  https://feathericons.com/  */
 
         const containerItems = this.currentComponent.querySelector('.dropdown-content')
 
         //set items
         const processItems = (data, containerItems) => {
-            data.forEach(data => {
+            data.forEach((data,index) => {
 
                 // process
                 let component = new this.ItemClass()
@@ -238,6 +238,7 @@ class Dropdown {
 
 const dropdownConfig = {
     nameDropdown : 'dropdown name ',
+    restablishOnClose : false,
     content : [
         {
             nameItem : 'dropdown item1',
@@ -248,7 +249,9 @@ const dropdownConfig = {
                     nameItem: 'dropdown sub item1',
                     closeInAction: true,
                     action: () => { console.log('hola item 1'); },
-                    content : []
+                    content : [
+                        
+                    ]
                 }
             ]
         },

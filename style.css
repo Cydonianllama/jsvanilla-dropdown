@@ -29,29 +29,30 @@
     gap: 0.5rem;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: all 0.5s ease-in-out;
+    transition: max-height 0.6s ease-in;
     overflow: hidden;
     background-color: #3f37c9;
     padding: 0.5rem;
 }
 .dropdown-item-content-open{
     visibility: visible;
-    height: 10px;
+    max-height: 50px;
     padding: 0.5rem;
 }
 .dropwdown-item-content-close{
     visibility: hidden;
     padding: 0;
-    height: 0;
+    max-height: 0;
 }
 .dropdown-content-open{
     visibility: visible;
-    height: auto;
+    max-height: 500px;
     padding: 0.5rem;
 }
 .dropwdown-content-close{
     visibility: hidden;
     padding: 0;
+    max-height: 0;
     height: 0;
 }
 .dropdown{

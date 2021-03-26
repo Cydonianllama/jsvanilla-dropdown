@@ -1,0 +1,29 @@
+.dropdown-activator{
+    position: relative;
+}
+.dropdown-content{
+    
+}
+.dropdown-content-open{
+    visibility: visible;
+    height: max-content;
+}
+.dropwdown-content-close{
+    visibility: hidden;
+    height: 0;
+}
+.dropdown-light{
+
+}
+.dropdown-dark{
+
+}
+.dropdown{
+    position: relative;
+}
+.dropdown button{
+    outline: none;
+    border: none;
+    cursor: pointer;
+    padding: 1rem;
+}
